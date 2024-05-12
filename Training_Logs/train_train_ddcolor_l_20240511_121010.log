@@ -1,0 +1,713 @@
+2024-05-11 12:10:10,106 INFO: 
+                ____                _       _____  ____
+               / __ ) ____ _ _____ (_)_____/ ___/ / __ \
+              / __  |/ __ `// ___// // ___/\__ \ / /_/ /
+             / /_/ // /_/ /(__  )/ // /__ ___/ // _, _/
+            /_____/ \__,_//____//_/ \___//____//_/ |_|
+     ______                   __   __                 __      __
+    / ____/____   ____   ____/ /  / /   __  __ _____ / /__   / /
+   / / __ / __ \ / __ \ / __  /  / /   / / / // ___// //_/  / /
+  / /_/ // /_/ // /_/ // /_/ /  / /___/ /_/ // /__ / /<    /_/
+  \____/ \____/ \____/ \____/  /_____/\____/ \___//_/|_|  (_)
+    
+Version Information: 
+	BasicSR: 1.3.4.6
+	PyTorch: 2.2.0+cu121
+	TorchVision: 0.17.0+cu121
+2024-05-11 12:10:10,106 INFO: 
+  name: train_ddcolor_l
+  model_type: ColorModel
+  scale: 1
+  num_gpu: 1
+  manual_seed: 0
+  queue_size: 16
+  datasets:[
+    train:[
+      name: ImageNet
+      type: LabDataset
+      dataroot_gt: /
+      meta_info_file: ['data_list/impressions_train.txt']
+      io_backend:[
+        type: disk
+      ]
+      gt_size: 128
+      use_hflip: True
+      use_rot: False
+      do_cutmix: False
+      cutmix_p: 0.5
+      do_fmix: False
+      fmix_p: 0.5
+      use_shuffle: True
+      num_worker_per_gpu: 4
+      batch_size_per_gpu: 2
+      dataset_enlarge_ratio: 1
+      prefetch_mode: None
+      phase: train
+      scale: 1
+    ]
+    val:[
+      name: ImageNet
+      type: LabDataset
+      dataroot_gt: /
+      meta_info_file: ['data_list/impressions_val.txt']
+      gt_size: 256
+      io_backend:[
+        type: disk
+      ]
+      do_cutmix: False
+      cutmix_p: 0.5
+      do_fmix: False
+      fmix_p: 0.5
+      phase: val
+      scale: 1
+    ]
+  ]
+  network_g:[
+    type: DDColor
+    encoder_name: convnext-l
+    encoder_from_pretrain: True
+    decoder_name: MultiScaleColorDecoder
+    num_queries: 100
+    num_scales: 3
+    dec_layers: 9
+    last_norm: Spectral
+    num_output_channels: 2
+    do_normalize: False
+  ]
+  network_d:[
+    type: DynamicUNetDiscriminator
+    nf: 64
+    n_channels: 3
+  ]
+  path:[
+    pretrain_network_g: /home/raghuram/DDColor/experiments/train_ddcolor_l/models/net_g_130000.pth
+    strict_load_g: True
+    resume_state: /home/raghuram/DDColor/experiments/train_ddcolor_l/training_states/130000.state
+    experiments_root: /home/raghuram/DDColor/experiments/train_ddcolor_l
+    models: /home/raghuram/DDColor/experiments/train_ddcolor_l/models
+    training_states: /home/raghuram/DDColor/experiments/train_ddcolor_l/training_states
+    log: /home/raghuram/DDColor/experiments/train_ddcolor_l
+    visualization: /home/raghuram/DDColor/experiments/train_ddcolor_l/visualization
+    pretrain_network_d: /home/raghuram/DDColor/experiments/train_ddcolor_l/models/net_d_130000.pth
+  ]
+  train:[
+    color_enhance: True
+    color_enhance_factor: 1.2
+    optim_g:[
+      type: AdamW
+      lr: 0.0001
+      weight_decay: 0.01
+      betas: [0.9, 0.99]
+    ]
+    optim_d:[
+      type: Adam
+      lr: 0.0001
+      weight_decay: 0
+      betas: [0.9, 0.99]
+    ]
+    scheduler:[
+      type: MultiStepLR
+      milestones: [80000, 120000, 160000, 200000, 240000, 280000, 320000, 360001]
+      gamma: 0.5
+    ]
+    total_iter: 400000
+    warmup_iter: -1
+    pixel_opt:[
+      type: L1Loss
+      loss_weight: 0.1
+      reduction: mean
+    ]
+    perceptual_opt:[
+      type: PerceptualLoss
+      layer_weights:[
+        conv1_1: 0.0625
+        conv2_1: 0.125
+        conv3_1: 0.25
+        conv4_1: 0.5
+        conv5_1: 1.0
+      ]
+      vgg_type: vgg16_bn
+      use_input_norm: True
+      range_norm: False
+      perceptual_weight: 5.0
+      style_weight: 0
+      criterion: l1
+    ]
+    gan_opt:[
+      type: GANLoss
+      gan_type: vanilla
+      real_label_val: 1.0
+      fake_label_val: 0.0
+      loss_weight: 1.0
+    ]
+    colorfulness_opt:[
+      type: ColorfulnessLoss
+      loss_weight: 0.5
+    ]
+  ]
+  val:[
+    val_freq: 10000.0
+    save_img: False
+    pbar: True
+    metrics:[
+      fid:[
+        type: calculate_fid
+        better: lower
+      ]
+      cf:[
+        type: calculate_cf
+        better: higher
+      ]
+    ]
+  ]
+  logger:[
+    print_freq: 100
+    save_snapshot_freq: 1000.0
+    save_snapshot_verbose: True
+    save_checkpoint_freq: 10000.0
+    use_tb_logger: True
+    wandb:[
+      project: None
+      resume_id: None
+    ]
+  ]
+  dist_params:[
+    backend: nccl
+    port: 29500
+  ]
+  find_unused_parameters: True
+  dist: True
+  rank: 0
+  world_size: 1
+  auto_resume: True
+  is_train: True
+  root_path: /home/raghuram/DDColor
+
+2024-05-11 12:10:10,247 INFO: Dataset [LabDataset] - ImageNet is built.
+2024-05-11 12:10:10,247 INFO: Training statistics:
+	Number of train images: 11394
+	Dataset enlarge ratio: 1
+	Batch size per gpu: 2
+	World size (gpu number): 1
+	Require iter number per epoch: 5697
+	Total epochs: 71; iters: 400000.
+2024-05-11 12:10:10,247 INFO: Dataset [LabDataset] - ImageNet is built.
+2024-05-11 12:10:10,248 INFO: Number of val images/folders in ImageNet: 1666
+2024-05-11 12:10:11,850 INFO: [Encoder] Loading from pretrain/convnext_large_22k_224.pth ...
+2024-05-11 12:10:12,424 WARNING: Some model parameters or buffers are not found in the checkpoint:
+['norm0.weight', 'norm0.bias', 'norm1.weight', 'norm1.bias', 'norm2.weight', 'norm2.bias', 'norm3.weight', 'norm3.bias']
+2024-05-11 12:10:12,424 WARNING: The checkpoint state_dict contains keys that are not used by the model:
+['head.weight', 'head.bias']
+2024-05-11 12:10:12,917 INFO: Network [DDColor] is created.
+2024-05-11 12:10:13,117 INFO: Network: DistributedDataParallel - DDColor, with parameters: 227,869,328
+2024-05-11 12:10:13,117 INFO: DDColor(
+  (encoder): Encoder(
+    (arch): ConvNeXt(
+      (downsample_layers): ModuleList(
+        (0): Sequential(
+          (0): Conv2d(3, 192, kernel_size=(4, 4), stride=(4, 4))
+          (1): LayerNorm()
+        )
+        (1): Sequential(
+          (0): LayerNorm()
+          (1): Conv2d(192, 384, kernel_size=(2, 2), stride=(2, 2))
+        )
+        (2): Sequential(
+          (0): LayerNorm()
+          (1): Conv2d(384, 768, kernel_size=(2, 2), stride=(2, 2))
+        )
+        (3): Sequential(
+          (0): LayerNorm()
+          (1): Conv2d(768, 1536, kernel_size=(2, 2), stride=(2, 2))
+        )
+      )
+      (stages): ModuleList(
+        (0): Sequential(
+          (0): Block(
+            (dwconv): Conv2d(192, 192, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=192)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=192, out_features=768, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=768, out_features=192, bias=True)
+            (drop_path): Identity()
+          )
+          (1): Block(
+            (dwconv): Conv2d(192, 192, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=192)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=192, out_features=768, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=768, out_features=192, bias=True)
+            (drop_path): Identity()
+          )
+          (2): Block(
+            (dwconv): Conv2d(192, 192, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=192)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=192, out_features=768, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=768, out_features=192, bias=True)
+            (drop_path): Identity()
+          )
+        )
+        (1): Sequential(
+          (0): Block(
+            (dwconv): Conv2d(384, 384, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=384)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=384, out_features=1536, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=1536, out_features=384, bias=True)
+            (drop_path): Identity()
+          )
+          (1): Block(
+            (dwconv): Conv2d(384, 384, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=384)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=384, out_features=1536, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=1536, out_features=384, bias=True)
+            (drop_path): Identity()
+          )
+          (2): Block(
+            (dwconv): Conv2d(384, 384, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=384)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=384, out_features=1536, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=1536, out_features=384, bias=True)
+            (drop_path): Identity()
+          )
+        )
+        (2): Sequential(
+          (0): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (1): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (2): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (3): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (4): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (5): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (6): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (7): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (8): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (9): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (10): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (11): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (12): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (13): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (14): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (15): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (16): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (17): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (18): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (19): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (20): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (21): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (22): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (23): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (24): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (25): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+          (26): Block(
+            (dwconv): Conv2d(768, 768, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=768)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=768, out_features=3072, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=3072, out_features=768, bias=True)
+            (drop_path): Identity()
+          )
+        )
+        (3): Sequential(
+          (0): Block(
+            (dwconv): Conv2d(1536, 1536, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=1536)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=1536, out_features=6144, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=6144, out_features=1536, bias=True)
+            (drop_path): Identity()
+          )
+          (1): Block(
+            (dwconv): Conv2d(1536, 1536, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=1536)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=1536, out_features=6144, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=6144, out_features=1536, bias=True)
+            (drop_path): Identity()
+          )
+          (2): Block(
+            (dwconv): Conv2d(1536, 1536, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=1536)
+            (norm): LayerNorm()
+            (pwconv1): Linear(in_features=1536, out_features=6144, bias=True)
+            (act): GELU(approximate='none')
+            (pwconv2): Linear(in_features=6144, out_features=1536, bias=True)
+            (drop_path): Identity()
+          )
+        )
+      )
+      (norm0): LayerNorm()
+      (norm1): LayerNorm()
+      (norm2): LayerNorm()
+      (norm3): LayerNorm()
+      (norm): LayerNorm((1536,), eps=1e-06, elementwise_affine=True)
+    )
+  )
+  (decoder): Decoder(
+    (layers): Sequential(
+      (0): UnetBlockWide(
+        (shuf): CustomPixelShuffle_ICNR(
+          (conv): Sequential(
+            (0): Conv2d(1536, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          )
+          (shuf): PixelShuffle(upscale_factor=2)
+          (pad): ReplicationPad2d((1, 0, 1, 0))
+          (blur): AvgPool2d(kernel_size=2, stride=1, padding=0)
+          (relu): ReLU(inplace=True)
+        )
+        (bn): BatchNorm2d(768, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv): Sequential(
+          (0): Conv2d(1280, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (1): ReLU(inplace=True)
+          (2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+        (relu): ReLU()
+      )
+      (1): UnetBlockWide(
+        (shuf): CustomPixelShuffle_ICNR(
+          (conv): Sequential(
+            (0): Conv2d(512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(2048, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          )
+          (shuf): PixelShuffle(upscale_factor=2)
+          (pad): ReplicationPad2d((1, 0, 1, 0))
+          (blur): AvgPool2d(kernel_size=2, stride=1, padding=0)
+          (relu): ReLU(inplace=True)
+        )
+        (bn): BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv): Sequential(
+          (0): Conv2d(896, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (1): ReLU(inplace=True)
+          (2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+        (relu): ReLU()
+      )
+      (2): UnetBlockWide(
+        (shuf): CustomPixelShuffle_ICNR(
+          (conv): Sequential(
+            (0): Conv2d(512, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False)
+            (1): BatchNorm2d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+          )
+          (shuf): PixelShuffle(upscale_factor=2)
+          (pad): ReplicationPad2d((1, 0, 1, 0))
+          (blur): AvgPool2d(kernel_size=2, stride=1, padding=0)
+          (relu): ReLU(inplace=True)
+        )
+        (bn): BatchNorm2d(192, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (conv): Sequential(
+          (0): Conv2d(448, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+          (1): ReLU(inplace=True)
+          (2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
+        (relu): ReLU()
+      )
+    )
+    (last_shuf): CustomPixelShuffle_ICNR(
+      (conv): Sequential(
+        (0): Conv2d(256, 4096, kernel_size=(1, 1), stride=(1, 1))
+      )
+      (shuf): PixelShuffle(upscale_factor=4)
+      (pad): ReplicationPad2d((1, 0, 1, 0))
+      (blur): AvgPool2d(kernel_size=2, stride=1, padding=0)
+      (relu): ReLU(inplace=True)
+    )
+    (color_decoder): MultiScaleColorDecoder(
+      (pe_layer): PositionEmbeddingSine()
+      (transformer_self_attention_layers): ModuleList(
+        (0-8): 9 x SelfAttentionLayer(
+          (self_attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+          )
+          (norm): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+          (dropout): Dropout(p=0.0, inplace=False)
+        )
+      )
+      (transformer_cross_attention_layers): ModuleList(
+        (0-8): 9 x CrossAttentionLayer(
+          (multihead_attn): MultiheadAttention(
+            (out_proj): NonDynamicallyQuantizableLinear(in_features=256, out_features=256, bias=True)
+          )
+          (norm): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+          (dropout): Dropout(p=0.0, inplace=False)
+        )
+      )
+      (transformer_ffn_layers): ModuleList(
+        (0-8): 9 x FFNLayer(
+          (linear1): Linear(in_features=256, out_features=2048, bias=True)
+          (dropout): Dropout(p=0.0, inplace=False)
+          (linear2): Linear(in_features=2048, out_features=256, bias=True)
+          (norm): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+        )
+      )
+      (decoder_norm): LayerNorm((256,), eps=1e-05, elementwise_affine=True)
+      (query_feat): Embedding(100, 256)
+      (query_embed): Embedding(100, 256)
+      (level_embed): Embedding(3, 256)
+      (input_proj): ModuleList(
+        (0-1): 2 x Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1))
+        (2): Conv2d(256, 256, kernel_size=(1, 1), stride=(1, 1))
+      )
+      (color_embed): MLP(
+        (layers): ModuleList(
+          (0-2): 3 x Linear(in_features=256, out_features=256, bias=True)
+        )
+      )
+    )
+  )
+  (refine_net): Sequential(
+    (0): Sequential(
+      (0): Conv2d(103, 2, kernel_size=(1, 1), stride=(1, 1))
+    )
+  )
+)
+2024-05-11 12:10:13,607 INFO: Loading DDColor model from /home/raghuram/DDColor/experiments/train_ddcolor_l/models/net_g_130000.pth, with param key: [params].
+2024-05-11 12:10:13,864 INFO: Network [DynamicUNetDiscriminator] is created.
+2024-05-11 12:10:13,868 INFO: Network: DistributedDataParallel - DynamicUNetDiscriminator, with parameters: 5,919,617
+2024-05-11 12:10:13,868 INFO: DynamicUNetDiscriminator(
+  (layers): Sequential(
+    (0): Sequential(
+      (0): Conv2d(3, 64, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+      (1): ReLU(inplace=True)
+    )
+    (1): Sequential(
+      (0): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (1): ReLU(inplace=True)
+    )
+    (2): Sequential(
+      (0): Conv2d(64, 128, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+      (1): ReLU(inplace=True)
+      (2): SelfAttention(
+        (query): Conv1d(128, 16, kernel_size=(1,), stride=(1,), bias=False)
+        (key): Conv1d(128, 16, kernel_size=(1,), stride=(1,), bias=False)
+        (value): Conv1d(128, 128, kernel_size=(1,), stride=(1,), bias=False)
+      )
+    )
+    (3): Sequential(
+      (0): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (1): ReLU(inplace=True)
+    )
+    (4): Sequential(
+      (0): Conv2d(128, 256, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+      (1): ReLU(inplace=True)
+    )
+    (5): Sequential(
+      (0): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (1): ReLU(inplace=True)
+    )
+    (6): Sequential(
+      (0): Conv2d(256, 512, kernel_size=(4, 4), stride=(2, 2), padding=(1, 1))
+      (1): ReLU(inplace=True)
+    )
+    (7): Sequential(
+      (0): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      (1): ReLU(inplace=True)
+    )
+    (8): Sequential(
+      (0): Conv2d(512, 1, kernel_size=(4, 4), stride=(1, 1), bias=False)
+    )
+  )
+)
+2024-05-11 12:10:13,883 INFO: Loading DynamicUNetDiscriminator model from /home/raghuram/DDColor/experiments/train_ddcolor_l/models/net_d_130000.pth, with param key: [params].
+2024-05-11 12:10:13,889 INFO: Loss [L1Loss] is created.
+2024-05-11 12:10:14,673 INFO: Loss [PerceptualLoss] is created.
+2024-05-11 12:10:14,678 INFO: Loss [GANLoss] is created.
+2024-05-11 12:10:14,678 INFO: Loss [ColorfulnessLoss] is created.
+2024-05-11 12:10:14,933 INFO: Model [ColorModel] is created.
+2024-05-11 12:10:14,937 INFO: Resuming training from epoch: 22, iter: 130000.
+2024-05-11 12:10:21,064 INFO: Start training from epoch: 22, iter: 130000
+2024-05-11 12:10:46,810 INFO: [train..][epoch: 22, iter: 130,100, lr:(2.500e-05,)] [eta: 23:39:33, time (data): 0.257 (0.068)] l_g_pix: 5.3135e-01 l_g_percep: 7.8103e-01 l_g_gan: 7.5706e-01 l_g_color: 8.6643e-01 l_d: 1.2911e+00 real_score: 7.4656e-02 fake_score: -1.2314e-01 
+2024-05-11 12:11:04,838 INFO: [train..][epoch: 22, iter: 130,200, lr:(2.500e-05,)] [eta: 18:36:21, time (data): 0.219 (0.035)] l_g_pix: 7.8697e-01 l_g_percep: 9.2986e-01 l_g_gan: 6.0896e-01 l_g_color: 8.1980e-01 l_d: 1.3631e+00 real_score: 2.5757e-01 fake_score: 1.7985e-01 
+2024-05-11 12:11:22,874 INFO: [train..][epoch: 22, iter: 130,300, lr:(2.500e-05,)] [eta: 16:54:32, time (data): 0.180 (0.002)] l_g_pix: 6.5482e-01 l_g_percep: 8.4328e-01 l_g_gan: 7.4589e-01 l_g_color: 8.3868e-01 l_d: 1.3467e+00 real_score: -1.3864e-02 fake_score: -1.0047e-01 
+2024-05-11 12:11:40,913 INFO: [train..][epoch: 22, iter: 130,400, lr:(2.500e-05,)] [eta: 16:03:23, time (data): 0.180 (0.001)] l_g_pix: 4.8458e-01 l_g_percep: 7.9931e-01 l_g_gan: 6.9700e-01 l_g_color: 8.2495e-01 l_d: 1.3319e+00 real_score: 1.1154e-01 fake_score: -5.6422e-03 
+2024-05-11 12:11:58,974 INFO: [train..][epoch: 22, iter: 130,500, lr:(2.500e-05,)] [eta: 15:32:43, time (data): 0.181 (0.001)] l_g_pix: 5.7463e-01 l_g_percep: 8.5745e-01 l_g_gan: 7.2108e-01 l_g_color: 8.5488e-01 l_d: 1.3850e+00 real_score: -3.9522e-02 fake_score: -5.1487e-02 
+2024-05-11 12:12:16,977 INFO: [train..][epoch: 22, iter: 130,600, lr:(2.500e-05,)] [eta: 15:11:44, time (data): 0.180 (0.001)] l_g_pix: 6.4694e-01 l_g_percep: 8.2762e-01 l_g_gan: 6.5548e-01 l_g_color: 8.5436e-01 l_d: 1.3437e+00 real_score: 1.9514e-01 fake_score: 8.2434e-02 
+2024-05-11 12:12:35,064 INFO: [train..][epoch: 22, iter: 130,700, lr:(2.500e-05,)] [eta: 14:57:11, time (data): 0.181 (0.001)] l_g_pix: 4.1169e-01 l_g_percep: 7.1719e-01 l_g_gan: 7.9707e-01 l_g_color: 8.9263e-01 l_d: 1.3048e+00 real_score: -1.7521e-02 fake_score: -1.9471e-01 
+2024-05-11 12:12:53,086 INFO: [train..][epoch: 22, iter: 130,800, lr:(2.500e-05,)] [eta: 14:45:50, time (data): 0.181 (0.001)] l_g_pix: 5.4367e-01 l_g_percep: 7.5862e-01 l_g_gan: 7.4205e-01 l_g_color: 8.2046e-01 l_d: 1.3113e+00 real_score: 1.1595e-01 fake_score: -8.0085e-02 
+2024-05-11 12:13:11,098 INFO: [train..][epoch: 22, iter: 130,900, lr:(2.500e-05,)] [eta: 14:36:53, time (data): 0.180 (0.001)] l_g_pix: 2.5880e-01 l_g_percep: 5.4718e-01 l_g_gan: 7.7552e-01 l_g_color: 8.7931e-01 l_d: 1.3819e+00 real_score: -1.3052e-01 fake_score: -1.5614e-01 
+2024-05-11 12:13:29,175 INFO: [train..][epoch: 22, iter: 131,000, lr:(2.500e-05,)] [eta: 14:29:57, time (data): 0.180 (0.001)] l_g_pix: 3.8796e-01 l_g_percep: 6.4297e-01 l_g_gan: 8.0603e-01 l_g_color: 8.3469e-01 l_d: 1.3732e+00 real_score: -1.6827e-01 fake_score: -2.1382e-01 
+2024-05-11 12:13:47,305 INFO: [train..][epoch: 22, iter: 131,100, lr:(2.500e-05,)] [eta: 14:24:27, time (data): 0.181 (0.002)] l_g_pix: 6.3030e-01 l_g_percep: 8.6488e-01 l_g_gan: 5.6033e-01 l_g_color: 7.8260e-01 l_d: 1.2915e+00 real_score: 5.9131e-01 fake_score: 2.8730e-01 
+2024-05-11 12:14:05,301 INFO: [train..][epoch: 22, iter: 131,200, lr:(2.500e-05,)] [eta: 14:19:18, time (data): 0.181 (0.002)] l_g_pix: 7.6803e-01 l_g_percep: 9.5581e-01 l_g_gan: 6.0544e-01 l_g_color: 8.3630e-01 l_d: 1.2234e+00 real_score: 6.4868e-01 fake_score: 1.8636e-01 
