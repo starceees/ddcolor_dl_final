@@ -17,7 +17,9 @@ Highlights
 
 🪄 DDColor can provide vivid and natural colorization for historical black and white old photos.
 🎲 It can even colorize/recolor landscapes from anime games, transforming your animated scenery into a realistic real-life style! (Image source: Genshin Impact)
-##Inputs
+
+## Inputs
+
 <table>
   <tr>
     <td>
