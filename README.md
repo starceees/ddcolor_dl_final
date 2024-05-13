@@ -25,6 +25,40 @@
   </tr>
 </table>
 ##Ouputs
+### Style Transfer Results with Impressions Wiki Art Trained Model
+<table>
+  <tr>
+    <td>
+      <img src="colored_impressions/Ansel Adams _ Moore Photography.jpeg" alt="Image 1" width="200">
+    </td>
+    <td>
+      <img src="colored_impressions/Detroit circa 1915.jpg" alt="Image 2" width="200">
+    </td>
+    <td>
+      <img src="colored_impressions/New York Riverfront December 15, 1931.jpg" alt="Image 3" width="200">
+    </td>
+    <td>
+      <img src="colored_impressions/Einstein, Rejection, and Crafting a Future.jpeg" alt="Image 4" width="200">
+    </td>
+  </tr>
+</table>
+### Colored Results with ImageNet Tiny Trained Model
+<table>
+  <tr>
+    <td>
+      <img src="colored_output_imagemet_tiny/Ansel Adams _ Moore Photography.jpeg" alt="Image 1" width="200">
+    </td>
+    <td>
+      <img src="colored_output_imagemet_tiny/Detroit circa 1915.jpg" alt="Image 2" width="200">
+    </td>
+    <td>
+      <img src="colored_output_imagemet_tiny/New York Riverfront December 15, 1931.jpg" alt="Image 3" width="200">
+    </td>
+    <td>
+      <img src="colored_output_imagemet_tiny/Einstein, Rejection, and Crafting a Future.jpeg" alt="Image 4" width="200">
+    </td>
+  </tr>
+</table>
 
 # Pre-testing
 DDCOlor uses ConvNext-Net Pretrained weights for the backbone of the encoder to extract the image features. Download them from the link.
