@@ -66,7 +66,7 @@ Download Model Pretrained weights at [ImageNetTiny100k](https://drive.google.com
     </td>
   </tr>
 </table>
-
+Using the model we also performed 
 # Pre-testing
 DDCOlor uses ConvNext-Net Pretrained weights for the backbone of the encoder to extract the image features. Download them from the link.
 Download pretrained weights for [ConvNeXt](https://dl.fbaipublicfiles.com/convnext/convnext_large_22k_224.pth) and [InceptionV3](https://download.pytorch.org/models/inception_v3_google-1a9a5a14.pth) and put it into `pretrain` folder.
