@@ -46,7 +46,9 @@ Download the model pre-trained weights at [Impressions200k](https://drive.google
     </td>
   </tr>
 </table>
+
 ### Colored Results with ImageNet Tiny Trained Model
+
 Download Model Pretrained weights at [ImageNetTiny100k](https://drive.google.com/file/d/1FqggCk8fpHMs3-3IgUIO7ZM4LqC_rtpq/view?usp=drive_link) . This model was trained on 100k iterations.
 <table>
   <tr>
