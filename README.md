@@ -3,13 +3,13 @@
 This repository contains the implementation and results of our research project that extends the dual decoder architecture from the "DDColor: Towards Photo-Realistic Image Colorization via Dual Decoders" paper. We explore the versatility of this model by applying it to diverse tasks, including historical film restoration and artistic stylized color transfer.
 Highlights
 
-Replication of the original DDColor model's results using prescribed methodologies and datasets.
-Training the model from scratch on the Tiny ImageNet and WikiArt datasets for general and stylized image colorization tasks, respectively.
-Achieved high-fidelity restoration of historical black and white images.
-Effective style transfer in colorization by adopting characteristics of impressionist art.
-Seamless integration and reproduction of color nuances influenced by impressionism, enabling creative colorization in digital media.
-Comprehensive evaluations using quantitative metrics and qualitative insights, demonstrating improvements in color richness and accuracy.
-Enhanced model capability for diverse image colorization tasks, affirming its potential for fostering novel creative possibilities.
+#### Replication of the original DDColor model's results using prescribed methodologies and datasets.
+
+- Replication of the original DDColor model's results using prescribed methodologies and datasets.
+- Training the model from scratch on the Tiny ImageNet and WikiArt datasets for general and stylized image colorization tasks, respectively.
+- Achieved high-fidelity restoration of historical black and white images.
+- Effective style transfer in colorization by adopting characteristics of impressionist art.
+- Seamless integration and reproduction of color nuances influenced by impressionism, enabling creative colorization in digital media.
 # DD-Color
 <p align="center">
   <img src="assets/network_arch.jpg" width="100%">
