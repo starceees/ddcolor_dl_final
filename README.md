@@ -26,6 +26,7 @@
 </table>
 ##Ouputs
 ### Style Transfer Results with Impressions Wiki Art Trained Model
+Download the model pretrained weights at [Impressions200k](https://drive.google.com/file/d/1wP-C_aeLVbrQvS03mO4GtTbxBxKyroh-/view?usp=sharing) . This model was trained on 200k iterations.
 <table>
   <tr>
     <td>
@@ -43,19 +44,20 @@
   </tr>
 </table>
 ### Colored Results with ImageNet Tiny Trained Model
+Download Model Pretrained weights at [ImageNetTiny100k](https://drive.google.com/file/d/1FqggCk8fpHMs3-3IgUIO7ZM4LqC_rtpq/view?usp=drive_link) . This model was trained on 100k iterations.
 <table>
   <tr>
     <td>
-      <img src="colored_output_imagemet_tiny/Ansel Adams _ Moore Photography.jpeg" alt="Image 1" width="200">
+      <img src="colored_output_imagenet_tiny/Ansel Adams _ Moore Photography.jpeg" alt="Image 1" width="200">
     </td>
     <td>
-      <img src="colored_output_imagemet_tiny/Detroit circa 1915.jpg" alt="Image 2" width="200">
+      <img src="colored_output_imagenet_tiny/Detroit circa 1915.jpg" alt="Image 2" width="200">
     </td>
     <td>
-      <img src="colored_output_imagemet_tiny/New York Riverfront December 15, 1931.jpg" alt="Image 3" width="200">
+      <img src="colored_output_imagenet_tiny/New York Riverfront December 15, 1931.jpg" alt="Image 3" width="200">
     </td>
     <td>
-      <img src="colored_output_imagemet_tiny/Einstein, Rejection, and Crafting a Future.jpeg" alt="Image 4" width="200">
+      <img src="colored_output_imagenet_tiny/Einstein, Rejection, and Crafting a Future.jpeg" alt="Image 4" width="200">
     </td>
   </tr>
 </table>
