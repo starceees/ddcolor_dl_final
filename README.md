@@ -72,7 +72,25 @@ DDCOlor uses ConvNext-Net Pretrained weights for the backbone of the encoder to 
 Download pretrained weights for [ConvNeXt](https://dl.fbaipublicfiles.com/convnext/convnext_large_22k_224.pth) and [InceptionV3](https://download.pytorch.org/models/inception_v3_google-1a9a5a14.pth) and put it into `pretrain` folder.
 
 # Implementation 
-
+## The results after Training Obtained on the Impressions Dataset
+<table>
+  <tr>
+    <td>
+      <img src="plots_new/training_losses_1.png" alt="Training Losses - Pix, Percep, GAN" width="400" height="300">
+    </td>
+    <td>
+      <img src="plots_new/training_losses_2.png" alt="Training Losses - Color, D" width="400" height="300">
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img src="plots_new/validation_metrics.png" alt="Validation Metrics" width="400" height="300">
+    </td>
+    <td>
+      <img src="plots_new/real_fake_scores.png" alt="Real and Fake Scores" width="400" height="300">
+    </td>
+  </tr>
+</table>
 ### Requirements
 
 - Python >= 3.8
