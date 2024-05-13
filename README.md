@@ -48,16 +48,16 @@ Download Model Pretrained weights at [ImageNetTiny100k](https://drive.google.com
 <table>
   <tr>
     <td>
-      <img src="colored_output_imagenet_tiny/Ansel Adams _ Moore Photography.jpeg" alt="Image 1" width="200">
+      <img src="colorize_output_imagenet_tiny/Ansel Adams _ Moore Photography.jpeg" alt="Image 1" width="200">
     </td>
     <td>
-      <img src="colored_output_imagenet_tiny/Detroit circa 1915.jpg" alt="Image 2" width="200">
+      <img src="colorize_output_imagenet_tiny/Detroit circa 1915.jpg" alt="Image 2" width="200">
     </td>
     <td>
-      <img src="colored_output_imagenet_tiny/New York Riverfront December 15, 1931.jpg" alt="Image 3" width="200">
+      <img src="colorize_output_imagenet_tiny/New York Riverfront December 15, 1931.jpg" alt="Image 3" width="200">
     </td>
     <td>
-      <img src="colored_output_imagenet_tiny/Einstein, Rejection, and Crafting a Future.jpeg" alt="Image 4" width="200">
+      <img src="colorize_output_imagenet_tiny/Einstein, Rejection, and Crafting a Future.jpeg" alt="Image 4" width="200">
     </td>
   </tr>
 </table>
