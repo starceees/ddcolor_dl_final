@@ -3,6 +3,8 @@
 # DD-Color
 
 # Pre-testing
+DDCOlor uses ConvNext-Net Pretrained weights for the backbone of the encoder to extract the image features. Download them from the link.
+Download pretrained weights for [ConvNeXt](https://dl.fbaipublicfiles.com/convnext/convnext_large_22k_224.pth) and [InceptionV3](https://download.pytorch.org/models/inception_v3_google-1a9a5a14.pth) and put it into `pretrain` folder.
 
 # Implementation 
 ### Requirements
@@ -20,3 +22,8 @@ pip install -r requirements.txt
 python3 setup.py develop  # install basicsr
 ```
 # Value Params 
+
+## Acknowledgments
+We thank the authors of BasicSR for the awesome training pipeline.
+
+> Xintao Wang, Ke Yu, Kelvin C.K. Chan, Chao Dong and Chen Change Loy. BasicSR: Open Source Image and Video Restoration Toolbox. https://github.com/xinntao/BasicSR, 2020
