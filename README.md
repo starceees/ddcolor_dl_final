@@ -24,9 +24,12 @@
     </td>
   </tr>
 </table>
-##Ouputs
+
+## Outputs
+
 ### Style Transfer Results with Impressions Wiki Art Trained Model
-Download the model pretrained weights at [Impressions200k](https://drive.google.com/file/d/1wP-C_aeLVbrQvS03mO4GtTbxBxKyroh-/view?usp=sharing) . This model was trained on 200k iterations.
+
+Download the model pre-trained weights at [Impressions200k](https://drive.google.com/file/d/1wP-C_aeLVbrQvS03mO4GtTbxBxKyroh-/view?usp=sharing) . This model was trained on 200k iterations.
 <table>
   <tr>
     <td>
