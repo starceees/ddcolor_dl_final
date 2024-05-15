@@ -10,6 +10,41 @@ Highlights
 - Achieved high-fidelity restoration of historical black and white images.
 - Effective style transfer in colorization by adopting characteristics of impressionist art.
 - Seamless integration and reproduction of color nuances influenced by impressionism, enabling creative colorization in digital media.
+
+## Repo Includes 
+In this repo we include the full training codes and pipeline to recreate our results, we also provide the training logs and plotting function to infer the data and also the weights for our pre trained models for both datasets of ImageNet-Tiny and Impressions-WikiArt.
+### Requirements
+
+- Python >= 3.8
+- PyTorch >= 1.7
+
+### Install with conda (Recommend)
+The repository for DDColor suggests runnign with python 3.9, But we found usage with python 3.10.12 was smoother.
+```
+conda create -n ddcolor python=3.10
+conda activate ddcolor
+pip install -r requirements.txt
+
+python3 setup.py develop  # install basicsr
+```
+## Training
+
+### Create a Directory called data_list (Train.py directly refers to this) and 
+- To train the Model make sure the basicsr package is intalled and unzipped
+- Create train and val folders and add your respective data in data_list/train and data_list/val
+- from the root directory run the following commands
+```
+sh scripts/train.sh
+```
+## Inference/Testing
+- make sure all your test images are present in /assets/test_images
+- - Before running the commands check the scripts/inference.sh file to make sure --model-path --input --output-path are correctly speicified as your required to see the results
+- Run the following commands
+```
+sh scripts/inference.sh
+```
+# Value Params 
+As we have trained both on laptop and the HPC the params provided are for laptop training with 1 GPU , 32 batch size and 4 processes per node. you can optimize these based on needs.
 # DD-Color
 <p align="center">
   <img src="assets/network_arch.jpg" width="100%">
@@ -105,36 +140,18 @@ Download pretrained weights for [ConvNeXt](https://dl.fbaipublicfiles.com/convne
     </td>
   </tr>
 </table>
-### Requirements
 
-- Python >= 3.8
-- PyTorch >= 1.7
+## VIddeo Colorization Results
+### Input Black and White Video Frames
+<img src="assets/concatenated_frames" alt="Image 1">
 
-### Install with conda (Recommend)
-The repository for DDColor suggests runnign with python 3.9, But we found usage with python 3.10.12 was smoother.
-```
-conda create -n ddcolor python=3.10
-conda activate ddcolor
-pip install -r requirements.txt
+### Output Colored Video frames with model trained on ImageNet-Tiny
+[Link to Video](https://drive.google.com/file/d/10JzU-vz3rNd11aDkEMlCpb51iFrQNi1K/view?usp=drive_link)
+<img src="assets/concat_imagenet" alt="Image 1">
 
-python3 setup.py develop  # install basicsr
-```
-## Training
-### Create a Directory called data_list (Train.py directly refers to this) and 
-- To train the Model make sure the basicsr package is intalled and unzipped
-- Create train and val folders and add your respective data in data_list/train and data_list/val
-- from the root directory run the following commands
-```
-sh scripts/train.sh
-```
-## Inference/Testing
-- make sure all your test images are present in /assets/test_images
-- - Before running the commands check the scripts/inference.sh file to make sure --model-path --input --output-path are correctly speicified as your required to see the results
-- Run the following commands
-```
-sh scripts/inference.sh
-```
-# Value Params 
-As we have trained both on laptop and the HPC the params provided are for laptop training with 1 GPU , 32 batch size and 4 processes per node. you can optimize these based on needs.
+### Output Colored Video frames with model trained on Immpressions-WikiArt
+[Link to Video](https://drive.google.com/file/d/1rmOeo0iI1qFtU5-eAN3WrJ5GIatXcGo4/view?usp=drive_link)
+<img src="assets/concat_impressions" alt="Image 1">
+
 ## Acknowledgments
 We thank the authors of BasicSR for the awesome training pipeline.
