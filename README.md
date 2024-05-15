@@ -1,4 +1,4 @@
-# ddcolor_dl_final
+# Deep Leaning Final Project Spring 2024
 ## Dual Decoder Colorization - Extended Applications
 This repository contains the implementation and results of our research project that extends the dual decoder architecture from the "DDColor: Towards Photo-Realistic Image Colorization via Dual Decoders" paper. We explore the versatility of this model by applying it to diverse tasks, including historical film restoration and artistic stylized color transfer.
 Highlights
