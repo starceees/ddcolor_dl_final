@@ -79,7 +79,9 @@ Download Model Pretrained weights at [ImageNetTiny100k](https://drive.google.com
   </tr>
 </table>
 Using the model we also performed 
+
 # Pre-testing
+
 DDCOlor uses ConvNext-Net Pretrained weights for the backbone of the encoder to extract the image features. Download them from the link.
 Download pretrained weights for [ConvNeXt](https://dl.fbaipublicfiles.com/convnext/convnext_large_22k_224.pth) and [InceptionV3](https://download.pytorch.org/models/inception_v3_google-1a9a5a14.pth) and put it into `pretrain` folder.
 
@@ -122,9 +124,9 @@ python3 setup.py develop  # install basicsr
 - To train the Model make sure the basicsr package is intalled and unzipped
 - Create train and val folders and add your respective data in data_list/train and data_list/val
 - from the root directory run the following commands
-'''
+```
 sh scripts/train.sh
-'''
+```
 ## Inference/Testing
 - make sure all your test images are present in /assets/test_images
 - - Before running the commands check the scripts/inference.sh file to make sure --model-path --input --output-path are correctly speicified as your required to see the results
