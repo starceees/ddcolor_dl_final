@@ -117,9 +117,22 @@ pip install -r requirements.txt
 
 python3 setup.py develop  # install basicsr
 ```
+## Training
+### Create a Directory called data_list (Train.py directly refers to this) and 
+- To train the Model make sure the basicsr package is intalled and unzipped
+- Create train and val folders and add your respective data in data_list/train and data_list/val
+- from the root directory run the following commands
+'''
+sh scripts/train.sh
+'''
+## Inference/Testing
+- make sure all your test images are present in /assets/test_images
+- - Before running the commands check the scripts/inference.sh file to make sure --model-path --input --output-path are correctly speicified as your required to see the results
+- Run the following commands
+```
+sh scripts/inference.sh
+```
 # Value Params 
-
+As we have trained both on laptop and the HPC the params provided are for laptop training with 1 GPU , 32 batch size and 4 processes per node. you can optimize these based on needs.
 ## Acknowledgments
 We thank the authors of BasicSR for the awesome training pipeline.
-
-> Xintao Wang, Ke Yu, Kelvin C.K. Chan, Chao Dong and Chen Change Loy. BasicSR: Open Source Image and Video Restoration Toolbox. https://github.com/xinntao/BasicSR, 2020
