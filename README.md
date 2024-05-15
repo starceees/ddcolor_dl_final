@@ -143,15 +143,15 @@ Download pretrained weights for [ConvNeXt](https://dl.fbaipublicfiles.com/convne
 
 ## VIddeo Colorization Results
 ### Input Black and White Video Frames
-<img src="assets/concatenated_frames" alt="Image 1">
+<img src="assets/concatenated_frames.jpg">
 
 ### Output Colored Video frames with model trained on ImageNet-Tiny
 [Link to Video](https://drive.google.com/file/d/10JzU-vz3rNd11aDkEMlCpb51iFrQNi1K/view?usp=drive_link)
-<img src="assets/concat_imagenet" alt="Image 1">
+<img src="assets/concat_imagenet.jpg">
 
 ### Output Colored Video frames with model trained on Immpressions-WikiArt
 [Link to Video](https://drive.google.com/file/d/1rmOeo0iI1qFtU5-eAN3WrJ5GIatXcGo4/view?usp=drive_link)
-<img src="assets/concat_impressions" alt="Image 1">
+<img src="assets/concat_impressions.jpg" >
 
 ## Acknowledgments
 We thank the authors of BasicSR for the awesome training pipeline.
